@@ -4,15 +4,22 @@ import Styles from "./Styles";
 import "rsuite/dist/styles/rsuite-default.css";
 import { ControlLabel, Button, Form } from "rsuite";
 import InputElement from "./InputElement";
-import { BrowserRouter as Router, useHistory } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  useHistory,
+  useLocation,
+  Link,
+} from "react-router-dom";
 
 export default function FormInput(props) {
   const { onSubmitData, disableInputID } = props;
-  const history = useHistory();
+  const loaction = useLocation();
+  const history = useHistory;
+  console.log("current ID: ", loaction.state);
   const onSubmit = (obj, form) => {
-    onSubmitData(obj);
+    //onSubmitData(obj);
     setTimeout(form.restart, 0);
-    history.push("/table");
+    //history.push("/table");
   };
   return (
     <Styles>
@@ -20,7 +27,7 @@ export default function FormInput(props) {
         <Final_Form
           onSubmit={onSubmit}
           initialValues={props.initialValues}
-          render={({ handleSubmit, form, submitting, pristine }) => (
+          render={({ handleSubmit, form, submitting, pristine, values }) => (
             <Form onSubmit={handleSubmit}>
               <ControlLabel>ID</ControlLabel>
               <InputElement
@@ -38,7 +45,17 @@ export default function FormInput(props) {
               <ControlLabel>Country</ControlLabel>
               <InputElement type="text" icon="map-marker" name="country" />
               <div className="buttons">
-                <Button type="submit" disabled={submitting}>
+                <Button
+                  type="submit"
+                  disabled={submitting}
+                  componentClass={Link}
+                  to={{
+                    pathname: "/home",
+                    state: {
+                      properties: values,
+                    },
+                  }}
+                >
                   {disableInputID ? "Update" : "Add"}
                 </Button>
                 <Button

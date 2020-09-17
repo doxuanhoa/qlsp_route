@@ -65,8 +65,10 @@ const RenderTable = (props) => {
                 <span>
                   <Button
                     style={styles.btn}
-                    onClick={() => {
-                      showFormEdit(rowIndex.id);
+                    componentClass={Link}
+                    to={{
+                      pathname: "/input",
+                      state: { id: rowIndex.id },
                     }}
                   >
                     <Icon icon="edit2" />
@@ -87,4 +89,4 @@ const RenderTable = (props) => {
   );
 };
 
-export default RenderTable;
+export default RenderTable; 

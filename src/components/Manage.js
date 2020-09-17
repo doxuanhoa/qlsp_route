@@ -9,6 +9,7 @@ import {
   Route,
   Link,
   useHistory,
+  useLocation,
 } from "react-router-dom";
 
 const styles = {
@@ -20,6 +21,8 @@ const styles = {
 
 export default function Manage(props) {
   const history = useHistory();
+  const loaction = useLocation();
+  console.log("current Obj: ", loaction.state);
   const [arrayProduct, setArrayProduct] = useState(Database);
   const [properties, setProperties] = useState({
     id: "",
@@ -86,7 +89,6 @@ export default function Manage(props) {
         let index1 = arrayProduct.findIndex((s) => s.id === obj.id);
         arrayProduct[index1] = obj;
       } else {
-        console.log("current: ", index);
         let index2 = arrayTemporary.findIndex(
           (s) => s.id === arrayProduct[index].id
         );
@@ -107,8 +109,7 @@ export default function Manage(props) {
       onChangeStatusInputId(true);
       setProperties(arrayProduct[index]);
     }, 0);
-    console.log(arrayProduct[index]);
-    history.push("/input");
+    // history.push("/input");
   };
   const deleteData = (id) => {
     let index = arrayProduct.findIndex((s) => s.id === id);
@@ -127,41 +128,56 @@ export default function Manage(props) {
   };
 
   return (
-    <Router>
-      <div className="main">
-        <Route path="/input" exact>
-          <FormInput
-            onSubmitData={handleDataSubmit}
-            initialValues={properties}
-            disableInputID={disableInputID}
-          />
-        </Route>
+    // <Router>
+    <div className="main">
+      {/* <Route path="/input" exact>
+        </Route> */}
+      {/* <FormInput
+        onSubmitData={handleDataSubmit}
+        initialValues={properties}
+        disableInputID={disableInputID}
+      /> */}
 
-        <div className="content">
-          <Link
-            to={{
-              pathname: "/input",
-              state: { lll: "3435" },
-            }}
-          >
-            <Button style={styles.btn}>New Product</Button>
-          </Link>
-          <div className="search">
-            <input
-              onChange={onChangeSearchField}
-              value={keyWord}
-              placeholder="Search by id or name..."
-            />
-          </div>
-          <Table
-            arrayProduct={arrayProduct}
-            arrayTemporary={arrayTemporary}
-            showFormEdit={showFormEdit}
-            deleteData={deleteData}
-            keyWord={keyWord}
+      <div className="content">
+        <Button
+          style={styles.btn}
+          componentClass={Link}
+          to={{
+            pathname: "/input",
+            state: {
+              properties: props.properties,
+            },
+          }}
+        >
+          New Product
+        </Button>
+        {/* <Link
+          to={{
+            pathname: "/input",
+            state: {
+              lll: "3435",
+              zzzzz: "000000",
+            },
+          }}
+        >
+          New ProductAttribute{" "}
+        </Link> */}
+        <div className="search">
+          <input
+            onChange={onChangeSearchField}
+            value={keyWord}
+            placeholder="Search by id or name..."
           />
         </div>
+        <Table
+          arrayProduct={arrayProduct}
+          arrayTemporary={arrayTemporary}
+          showFormEdit={showFormEdit}
+          deleteData={deleteData}
+          keyWord={keyWord}
+        />
       </div>
-    </Router>
+    </div>
+    // </Router> 
   );
 }

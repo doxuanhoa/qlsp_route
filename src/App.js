@@ -13,20 +13,32 @@ import {
 function App() {
   return (
     <Router>
-      <Switch>
-        <div className="App">
-          <Route exact path="/table">
-            <Table />
-          </Route>
+      <div className="App">
+        <Switch>
+          <Route
+            exact
+            path="/"
+            render={(props) => <Manage {...props} />}
+          ></Route>
+          {/* <Route path="/table" render={(props) => <Table {...props} />} /> */}
+          <Route path="/table" />
+          <Route
+            path="/input"
+            component={(props) => <FormInput {...props} />}
+          />
+          <Route
+            path="/input"
+            component={(props) => <FormInput {...props} />}
+          />
+          {/* <Route exact path="/home">
+            <Manage  />
+          </Route> */}
           <Route exact path="/home">
             <Manage />
           </Route>
-          <Route exact path="/input">
-            <FormInput />
-          </Route>
-        </div>
-      </Switch>
-      <Redirect from="/" to="/home" />
+        </Switch>
+        <Redirect to="/home" />
+      </div>
     </Router>
   );
 }
