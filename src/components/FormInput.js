@@ -4,29 +4,20 @@ import Styles from "./Styles";
 import "rsuite/dist/styles/rsuite-default.css";
 import { ControlLabel, Button, Form } from "rsuite";
 import InputElement from "./InputElement";
-import {
-  BrowserRouter as Router,
-  useHistory,
-  useLocation,
-  Link,
-} from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 
-export default function FormInput(props) {
-  const { onSubmitData, disableInputID } = props;
-  const loaction = useLocation();
-  const history = useHistory;
-  console.log("current ID: ", loaction.state);
-  const onSubmit = (obj, form) => {
-    //onSubmitData(obj);
+export default function FormInput() {
+  const getState = useLocation().state;
+  const isInputId = getState.setIsInputId;
+  const onSubmit = (form) => {
     setTimeout(form.restart, 0);
-    //history.push("/table");
   };
   return (
     <Styles>
       <div className="modal-body">
         <Final_Form
           onSubmit={onSubmit}
-          initialValues={props.initialValues}
+          initialValues={getState.rowIndex}
           render={({ handleSubmit, form, submitting, pristine, values }) => (
             <Form onSubmit={handleSubmit}>
               <ControlLabel>ID</ControlLabel>
@@ -34,7 +25,7 @@ export default function FormInput(props) {
                 type="text"
                 icon="edit"
                 name="id"
-                disabled={disableInputID}
+                disabled={isInputId}
               />
               <ControlLabel>Name</ControlLabel>
               <InputElement type="text" icon="slack" name="name" />
@@ -50,13 +41,14 @@ export default function FormInput(props) {
                   disabled={submitting}
                   componentClass={Link}
                   to={{
-                    pathname: "/home",
+                    pathname: "/",
                     state: {
-                      properties: values,
+                      obj: values,
+                      isInputId: isInputId,
                     },
                   }}
                 >
-                  {disableInputID ? "Update" : "Add"}
+                  {isInputId ? "Update" : "Add"}
                 </Button>
                 <Button
                   type="button"

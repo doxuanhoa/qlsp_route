@@ -1,16 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Table from "./RenderTable";
 import Database from "./Database";
-import FormInput from "./FormInput";
 import "rsuite/dist/styles/rsuite-default.css";
 import { Alert, Button } from "rsuite";
-import {
-  BrowserRouter as Router,
-  Route,
-  Link,
-  useHistory,
-  useLocation,
-} from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const styles = {
   btn: {
@@ -20,9 +13,7 @@ const styles = {
 };
 
 export default function Manage(props) {
-  const history = useHistory();
-  const loaction = useLocation();
-  console.log("current Obj: ", loaction.state);
+  const getState = useLocation().state;
   const [arrayProduct, setArrayProduct] = useState(Database);
   const [properties, setProperties] = useState({
     id: "",
@@ -33,11 +24,30 @@ export default function Manage(props) {
   });
   const [arrayTemporary, setArrayTemporary] = useState([]);
   const [keyWord, setKeyWord] = useState("");
-  const [disableInputID, setDisableInputID] = useState(false);
+  const [isInputId, setIsInputId] = useState(false);
 
-  const onChangeStatusInputId = (disableInputID = false) => {
-    setDisableInputID(disableInputID);
-  };
+  useEffect(() => {
+    if (getState) {
+      const index1 = arrayProduct.findIndex((s) => s.id === getState.obj.id);
+      if (!getState.isInputId) {
+        if (!checkValidateId(getState.obj)) {
+          return;
+        }
+        setArrayProduct([...arrayProduct, getState.obj]);
+      } else {
+        if (arrayTemporary.length === 0) {
+          arrayProduct[index1] = getState.obj;
+        } else {
+          const index2 = arrayTemporary.findIndex((s) => s.id === getState.id);
+          arrayProduct[index1] = getState.obj;
+          arrayTemporary[index2] = getState.obj;
+        }
+        setArrayProduct(arrayProduct);
+        setArrayTemporary(arrayTemporary);
+      }
+      Alert.success("Success!", 2000);
+    }
+  }, []);
 
   const clearInput = () => {
     setProperties({});
@@ -76,41 +86,6 @@ export default function Manage(props) {
     return validate;
   };
 
-  const handleDataSubmit = (obj) => {
-    let index = arrayProduct.findIndex((s) => s.id === obj.id);
-    if (!disableInputID) {
-      if (!checkValidateId(obj)) {
-        return;
-      } else {
-        setArrayProduct([...arrayProduct, obj]);
-      }
-    } else {
-      if (arrayTemporary.length === 0) {
-        let index1 = arrayProduct.findIndex((s) => s.id === obj.id);
-        arrayProduct[index1] = obj;
-      } else {
-        let index2 = arrayTemporary.findIndex(
-          (s) => s.id === arrayProduct[index].id
-        );
-        arrayProduct[index] = obj;
-        arrayTemporary[index2] = obj;
-      }
-      setArrayProduct(arrayProduct);
-      setArrayTemporary(arrayTemporary);
-    }
-    onChangeStatusInputId(false);
-    clearInput();
-    Alert.success("Success!", 1500);
-  };
-
-  const showFormEdit = (id) => {
-    let index = arrayProduct.findIndex((s) => s.id === id);
-    setTimeout(() => {
-      onChangeStatusInputId(true);
-      setProperties(arrayProduct[index]);
-    }, 0);
-    // history.push("/input");
-  };
   const deleteData = (id) => {
     let index = arrayProduct.findIndex((s) => s.id === id);
     if (arrayTemporary.length === 0) {
@@ -128,40 +103,18 @@ export default function Manage(props) {
   };
 
   return (
-    // <Router>
     <div className="main">
-      {/* <Route path="/input" exact>
-        </Route> */}
-      {/* <FormInput
-        onSubmitData={handleDataSubmit}
-        initialValues={properties}
-        disableInputID={disableInputID}
-      /> */}
-
       <div className="content">
         <Button
           style={styles.btn}
           componentClass={Link}
           to={{
             pathname: "/input",
-            state: {
-              properties: props.properties,
-            },
+            state: { setIsInputId: false },
           }}
         >
           New Product
         </Button>
-        {/* <Link
-          to={{
-            pathname: "/input",
-            state: {
-              lll: "3435",
-              zzzzz: "000000",
-            },
-          }}
-        >
-          New ProductAttribute{" "}
-        </Link> */}
         <div className="search">
           <input
             onChange={onChangeSearchField}
@@ -172,12 +125,10 @@ export default function Manage(props) {
         <Table
           arrayProduct={arrayProduct}
           arrayTemporary={arrayTemporary}
-          showFormEdit={showFormEdit}
           deleteData={deleteData}
           keyWord={keyWord}
         />
       </div>
     </div>
-    // </Router> 
   );
 }

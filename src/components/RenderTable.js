@@ -68,7 +68,7 @@ const RenderTable = (props) => {
                     componentClass={Link}
                     to={{
                       pathname: "/input",
-                      state: { id: rowIndex.id },
+                      state: { rowIndex: rowIndex, setIsInputId: true },
                     }}
                   >
                     <Icon icon="edit2" />
@@ -89,4 +89,4 @@ const RenderTable = (props) => {
   );
 };
 
-export default RenderTable; 
+export default RenderTable;
