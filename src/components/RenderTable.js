@@ -2,12 +2,7 @@ import React from "react";
 import "rsuite/lib/styles/index.less";
 import "rsuite/dist/styles/rsuite-default.css";
 import { Icon, Button, Table } from "rsuite";
-import {
-  BrowserRouter as Router,
-  Route,
-  Link,
-  useHistory,
-} from "react-router-dom";
+import { Link } from "react-router-dom";
 const { Column, HeaderCell, Cell } = Table;
 const styles = {
   btn: {
@@ -21,13 +16,7 @@ const styles = {
 };
 
 const RenderTable = (props) => {
-  const {
-    showFormEdit,
-    deleteData,
-    arrayProduct = [],
-    arrayTemporary = [],
-    keyWord,
-  } = props;
+  const { deleteData, arrayProduct = [], arrayTemporary = [], keyWord } = props;
 
   function getData() {
     const listData = keyWord === "" ? arrayProduct : arrayTemporary;
